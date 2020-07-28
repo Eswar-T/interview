@@ -7,6 +7,7 @@ import {
   Modal,
   TouchableOpacity, TextInput
 } from 'react-native';
+import { api } from '../network/utility'
 
 
 class PostsList extends Component  {
@@ -14,30 +15,39 @@ class PostsList extends Component  {
     super(props);
     this.state={
         text:'',
-      
+         dataSource:[]
     }
      this.arrayholder = [];
+   this.successfunction = this.successfunction.bind(this);
   }
+
+  
 
 
   componentDidMount(){
-  fetch("https://jsonplaceholder.typicode.com/posts")
-    .then((response) => response.json())
-    .then( (responseJson) => {  
-      console.log("responseJson", responseJson)                                                     
-      this.setState({ dataSource: responseJson},
-        function() {
-          this.arrayholder = responseJson;
-        })
-    })
-    .catch((error) => console.log("error",error)) 
+    
+
+    api(this.successfunction,this.errorfunction);
+
+     
+   
   }
+
+  successfunction(response){
+    this.setState({ dataSource : response},
+      function() {
+        this.arrayholder = response;
+      })
+
+     // console.log(this.state.dataSource,"respone"),
+   }
 
   renderBody = ( content ) => {   
      this.setState({ content : content },()=> this.props.navigation.navigate("PostView",{ contentData : this.state.content }));
   }
 
   renderId = ( id ) => {
+    console.log(id,"id")
     this.setState({ id : id },()=> this.props.navigation.navigate("UserView",{ userId : this.state.id }));
  }
 
